@@ -64,19 +64,21 @@ while (($data = fgetcsv($phrases_csv)) !== false) {
 	if (array_key_exists($key, $old)) {
 		continue;
 	}
-	$data[1] = '';
-	$newPhrases[] = $data;
+	$module = $data[3] ?? '';
+	$newPhrases[] = [$data[0], '', $module];
 }
 
-// Sort by module (column 3) A-Z, then by phrase (column 0) A-Z
+// Sort by module A-Z, then by phrase A-Z
 usort($newPhrases, function($a, $b) {
-	$cmp = strcasecmp($a[3] ?? '', $b[3] ?? '');
+	$cmp = strcasecmp($a[2], $b[2]);
 	if ($cmp !== 0) return $cmp;
 	return strcasecmp($a[0], $b[0]);
 });
 
+// Write 2-column CSV (phrase, translation) for Magento language pack compatibility
+// Module is kept during sort but not written to the output
 foreach ($newPhrases as $data) {
-	fputcsv($de_new_csv, $data);
+	fputcsv($de_new_csv, [$data[0], $data[1]]);
 }
 
 fclose($de_csv);

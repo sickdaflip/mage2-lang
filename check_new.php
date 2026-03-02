@@ -58,19 +58,29 @@ if ($magentoRoot) {
 
 echo count($old) . " existing translations loaded.\n";
 
-$newCount = 0;
+$newPhrases = [];
 while (($data = fgetcsv($phrases_csv)) !== false) {
 	$key = $data[0];
 	if (array_key_exists($key, $old)) {
 		continue;
 	}
 	$data[1] = '';
+	$newPhrases[] = $data;
+}
+
+// Sort by module (column 3) A-Z, then by phrase (column 0) A-Z
+usort($newPhrases, function($a, $b) {
+	$cmp = strcasecmp($a[3] ?? '', $b[3] ?? '');
+	if ($cmp !== 0) return $cmp;
+	return strcasecmp($a[0], $b[0]);
+});
+
+foreach ($newPhrases as $data) {
 	fputcsv($de_new_csv, $data);
-	$newCount++;
 }
 
 fclose($de_csv);
 fclose($phrases_csv);
 fclose($de_new_csv);
 
-echo "$newCount missing translations written to de_DE_new.csv\n";
+echo count($newPhrases) . " missing translations written to de_DE_new.csv\n";

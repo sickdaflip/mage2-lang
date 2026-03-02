@@ -46,11 +46,23 @@ php bin/magento i18n:collect-phrases -m > phrases.csv
 Copy the `phrases.csv` into this repository and run:
 
 ```bash
+php check_new.php /path/to/magento2
+```
+
+Pass the path to your Magento 2 root directory as argument. The script will
+then also check for existing translations in module-level `i18n/de_DE.csv` files
+(e.g. `vendor/magento/module-catalog/i18n/de_DE.csv`) so they are not reported
+as missing.
+
+You can also run it without the argument to only compare against this
+language pack's `de_DE.csv`:
+
+```bash
 php check_new.php
 ```
 
 This will output a new file `de_DE_new.csv` which only contains the
-phrases that are not yet translated in `de_DE.csv`.
+phrases that are not yet translated.
 
 ### Translate phrases
 

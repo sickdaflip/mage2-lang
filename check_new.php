@@ -59,11 +59,13 @@ if ($magentoRoot) {
 echo count($old) . " existing translations loaded.\n";
 
 $newPhrases = [];
+$seen = [];
 while (($data = fgetcsv($phrases_csv)) !== false) {
 	$key = $data[0];
-	if (array_key_exists($key, $old)) {
+	if (array_key_exists($key, $old) || array_key_exists($key, $seen)) {
 		continue;
 	}
+	$seen[$key] = true;
 	$module = $data[3] ?? '';
 	$newPhrases[] = [$data[0], '', $module];
 }
